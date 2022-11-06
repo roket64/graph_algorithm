@@ -1,11 +1,12 @@
 #ifndef GRAPH_ALGORITHM_BASE_STRUCTURE_H
 #define GRAPH_ALGORITHM_BASE_STRUCTURE_H
 
-class base_node {
+#include <iostream>
 
+class base_node {
 };
 
-template<class NodeType>
+template<class NodeType = int>
 class base_edge {
 public:
     typedef NodeType node_type;
@@ -14,7 +15,9 @@ public:
     typedef node_type &node_t_reference;
     typedef const node_type &const_node_t_reference;
 
-    base_edge() : to_(-1), from_(-1) {}
+    base_edge() : to_(-1), from_(-1) {
+        std::cout << "base_edge::base_edge() called uwu\n";
+    }
 
     explicit base_edge(const node_type to) : to_(to), from_(-1) {}
 
