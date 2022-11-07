@@ -10,15 +10,16 @@
 class dinic_node : base_node {
 };
 
-template<class NodeType = int, class FlowType = int>
-class dinic_edge : base_edge<NodeType> {
+template<class NodeType = int, class FlowType = int> requires integer<FlowType>
+class flow_edge : base_edge<NodeType> {
 public:
     typedef FlowType flow_type;
     typedef flow_type *flow_t_pointer;
     typedef flow_type &flow_t_reference;
-    typedef dinic_edge<NodeType, FlowType> edge;
-    typedef dinic_edge<NodeType, FlowType> *edge_pointer;
-    typedef dinic_edge<NodeType, FlowType> &edge_reference;
+
+    typedef flow_edge<NodeType, FlowType> edge;
+    typedef flow_edge<NodeType, FlowType> *edge_pointer;
+    typedef flow_edge<NodeType, FlowType> &edge_reference;
 
     typedef typename
     base_edge<NodeType>::node_type node_type;
@@ -29,26 +30,27 @@ public:
     typedef typename
     base_edge<NodeType>::const_node_t_pointer const_node_t_pointer;
 
-    dinic_edge() :
+    //TODO: should remove output text later
+    flow_edge() :
             base_edge<node_type>(), capacity_(0), flow_(0), reversal_edge_pointer_(nullptr) {
-        std::cout << "dinic_edge::dinic_edge() called uwu\n";
+        std::cout << "flow_edge::flow_edge() called uwu\n";
     };
 
-    explicit dinic_edge(const node_type to) :
+    explicit flow_edge(const node_type to) :
             base_edge<node_type>(to), capacity_(0), flow_(0), reversal_edge_pointer_(nullptr) {};
 
-    dinic_edge(const node_type to, const node_type from) :
+    flow_edge(const node_type to, const node_type from) :
             base_edge<node_type>(to, from), capacity_(0), flow_(0), reversal_edge_pointer_(nullptr) {};
 
-    dinic_edge(const node_type to,
-               const node_type from,
-               const flow_type capacity) :
+    flow_edge(const node_type to,
+              const node_type from,
+              const flow_type capacity) :
             base_edge<node_type>(to, from), capacity_(0), flow_(0), reversal_edge_pointer_(nullptr) {};
 
-    dinic_edge(const node_type to,
-               const node_type from,
-               const flow_type capacity,
-               node_t_pointer reversal) :
+    flow_edge(const node_type to,
+              const node_type from,
+              const flow_type capacity,
+              node_t_pointer reversal) :
             base_edge<NodeType>(to, from), capacity_(capacity), flow_(0), reversal_edge_pointer_(reversal) {};
 
     inline flow_type capacity() {
@@ -83,11 +85,11 @@ private:
 };
 
 template<class NodeType = int, class FlowType = int>
-class dinic : dinic_edge<NodeType, FlowType> {
+class dinic : flow_edge<NodeType, FlowType> {
 public:
-    typedef dinic_edge<NodeType, FlowType> edge;
-    typedef dinic_edge<NodeType, FlowType> *edge_pointer;
-    typedef dinic_edge<NodeType, FlowType> &edge_reference;
+    typedef flow_edge<NodeType, FlowType> edge;
+    typedef flow_edge<NodeType, FlowType> *edge_pointer;
+    typedef flow_edge<NodeType, FlowType> &edge_reference;
 
 private:
     std::vector<int> level_;

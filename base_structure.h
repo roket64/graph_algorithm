@@ -2,11 +2,16 @@
 #define GRAPH_ALGORITHM_BASE_STRUCTURE_H
 
 #include <iostream>
+#include <type_traits>
+#include <concepts>
+
+template<class T>
+concept integer = std::is_integral_v<T>;
 
 class base_node {
 };
 
-template<class NodeType = int>
+template<class NodeType = int> requires integer<NodeType>
 class base_edge {
 public:
     typedef NodeType node_type;
@@ -15,6 +20,7 @@ public:
     typedef node_type &node_t_reference;
     typedef const node_type &const_node_t_reference;
 
+    //TODO: should remove output text later
     base_edge() : to_(-1), from_(-1) {
         std::cout << "base_edge::base_edge() called uwu\n";
     }
