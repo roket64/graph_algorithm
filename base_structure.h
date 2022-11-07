@@ -20,7 +20,6 @@ public:
     typedef node_t &node_t_ref;
     typedef const node_t &const_node_t_ref;
 
-    //TODO: should remove output text later
     base_edge() :
             to_(-1),
             from_(-1) {};
@@ -65,6 +64,8 @@ public:
     typedef typename
     base_edge<NodeType>::node_t node_t;
     typedef typename
+    base_edge<NodeType>::const_node_t const_node_t;
+    typedef typename
     base_edge<NodeType>::node_t_ptr node_t_ptr;
     typedef typename
     base_edge<NodeType>::node_t_ref node_t_ref;
@@ -75,30 +76,30 @@ public:
             flow_(0),
             reversal_edge_pointer_(nullptr) {};
 
-    explicit flow_edge(const node_t to) :
+    explicit flow_edge(const_node_t to) :
             base_edge<node_t>(to),
             capacity_(0),
             flow_(0),
             reversal_edge_pointer_(nullptr) {};
 
-    flow_edge(const node_t to,
-              const node_t from) :
+    flow_edge(const_node_t to,
+              const_node_t from) :
             base_edge<node_t>(to, from),
             capacity_(0),
             flow_(0),
             reversal_edge_pointer_(nullptr) {};
 
-    flow_edge(const node_t to,
-              const node_t from,
-              const flow_t capacity) :
+    flow_edge(const_node_t to,
+              const_node_t from,
+              const_flow_t capacity) :
             base_edge<node_t>(to, from),
             capacity_(0),
             flow_(0),
             reversal_edge_pointer_(nullptr) {};
 
-    flow_edge(const node_t to,
-              const node_t from,
-              const flow_t capacity,
+    flow_edge(const_node_t to,
+              const_node_t from,
+              const_flow_t capacity,
               node_t_ptr reversal) :
             base_edge<NodeType>(to, from),
             capacity_(capacity),
