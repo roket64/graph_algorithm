@@ -8,9 +8,6 @@
 template<class T>
 concept integer = std::is_integral_v<T>;
 
-class base_node {
-};
-
 template<class NodeType = int> requires integer<NodeType>
 class base_edge {
 public:
@@ -24,19 +21,23 @@ public:
     typedef const node_t &const_node_t_ref;
 
     //TODO: should remove output text later
-    base_edge() : to_(-1), from_(-1) {
-        std::cout << "base_edge::base_edge() called uwu\n";
-    }
+    base_edge() :
+            to_(-1),
+            from_(-1) {};
 
-    explicit base_edge(const node_t to) : to_(to), from_(-1) {}
+    explicit base_edge(const node_t to) :
+            to_(to),
+            from_(-1) {}
 
-    base_edge(const node_t to, const node_t from) : to_(to), from_(from) {}
+    base_edge(const node_t to, const node_t from) :
+            to_(to),
+            from_(from) {}
 
-    inline node_t to() const {
+    inline const_node_t_ref to() const {
         return this->to_;
     }
 
-    inline node_t from() const {
+    inline const_node_t_ref from() const {
         return this->from_;
     }
 
@@ -51,10 +52,10 @@ public:
     typedef FlowType flow_t;
     typedef const flow_t const_flow_t;
 
-    typedef flow_t *flow_type_ptr;
+    typedef flow_t *flow_t_ptr;
     typedef const flow_t *const_flow_t_ptr;
 
-    typedef flow_t &flow_type_ref;
+    typedef flow_t &flow_t_ref;
     typedef const flow_t &const_flow_t_ref;
 
     typedef flow_edge<NodeType, FlowType> edge;
@@ -68,14 +69,11 @@ public:
     typedef typename
     base_edge<NodeType>::node_t_ref node_t_ref;
 
-    //TODO: should remove output text later
     flow_edge() :
             base_edge<node_t>(),
             capacity_(0),
             flow_(0),
-            reversal_edge_pointer_(nullptr) {
-        std::cout << "flow_edge::flow_edge() called uwu\n";
-    };
+            reversal_edge_pointer_(nullptr) {};
 
     explicit flow_edge(const node_t to) :
             base_edge<node_t>(to),
@@ -107,15 +105,15 @@ public:
             flow_(0),
             reversal_edge_pointer_(reversal) {};
 
-    inline flow_type_ref capacity() const {
+    inline const_flow_t_ref capacity() const {
         return this->capacity_;
     }
 
-    inline flow_type_ref flow() const {
+    inline const_flow_t_ref flow() const {
         return this->flow_;
     }
 
-    flow_type_ref spare() const {
+    inline const_flow_t_ref spare() const {
         return this->capacity_ - this->flow_;
     }
 
