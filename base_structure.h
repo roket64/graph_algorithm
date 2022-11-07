@@ -146,6 +146,7 @@ public:
         return this->flow_;
     }
 
+    // TODO:this implementation raises the SEGFAULT, should fix this
     const_flow_t_ref spare() const {
         return this->capacity_ - this->flow_;
     }
@@ -162,7 +163,8 @@ public:
     }
 
     void push_flow(const_flow_t amount) {
-        this->reversal_edge_pointer_->flow_ -= amount;
+        if (this->reversal_edge_pointer_ != nullptr)
+            this->reversal_edge_pointer_->flow_ -= amount;
         this->flow_ += amount;
     }
 

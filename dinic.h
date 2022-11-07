@@ -42,7 +42,7 @@ private:
     std::vector<f_edge> adj_;
     std::vector<f_edge_pointer> adj_ptr_;
 
-    bool can_reach(node_t source, node_t sink) {
+    bool bfs(node_t source, node_t sink) {
         std::fill(level_.begin(), level_.end(), -1);
         std::fill(work_.begin(), work_.end(), 0);
         std::queue<node_t> queue;
@@ -59,6 +59,13 @@ private:
                     level_[next_] = level_[cur_] + 1;
                 }
             }
+        }
+    }
+
+    flow_t dfs(const_node_t cur, const_node_t sink, const_flow_t flow) {
+        if (cur == sink) return flow;
+        for (auto &i = work_[cur]; i < adj_[cur].size(); ++i) {
+            auto next_ = adj_[cur][i];
         }
     }
 };
