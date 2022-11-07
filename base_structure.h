@@ -1,14 +1,13 @@
 #ifndef GRAPH_ALGORITHM_BASE_STRUCTURE_H
 #define GRAPH_ALGORITHM_BASE_STRUCTURE_H
 
-#include <iostream>
 #include <type_traits>
 #include <concepts>
 
 template<class T>
-concept integer = std::is_integral_v<T>;
+concept mutable_integer = std::is_integral_v<T> && !std::is_const_v<T>;
 
-template<class NodeType = int> requires integer<NodeType>
+template<class NodeType = int> requires mutable_integer<NodeType>
 class base_edge {
 public:
     typedef NodeType node_t;
@@ -41,11 +40,11 @@ public:
     }
 
 private:
-    node_t to_;
-    node_t from_;
+    const_node_t to_;
+    const_node_t from_;
 };
 
-template<class NodeType = int, class FlowType = int> requires integer<FlowType>
+template<class NodeType = int, class FlowType = int> requires mutable_integer<FlowType>
 class flow_edge : base_edge<NodeType> {
 public:
     typedef FlowType flow_t;
@@ -58,15 +57,22 @@ public:
     typedef const flow_t &const_flow_t_ref;
 
     typedef flow_edge<NodeType, FlowType> edge;
+    typedef const flow_edge<NodeType, FlowType> const_edge;
+
     typedef flow_edge<NodeType, FlowType> *edge_ptr;
+    typedef const flow_edge<NodeType, FlowType> *const_edge_ptr;
+
     typedef flow_edge<NodeType, FlowType> &edge_ref;
+    typedef const flow_edge<NodeType, FlowType> &const_edge_ref;
 
     typedef typename
     base_edge<NodeType>::node_t node_t;
     typedef typename
     base_edge<NodeType>::const_node_t const_node_t;
+
     typedef typename
     base_edge<NodeType>::node_t_ptr node_t_ptr;
+
     typedef typename
     base_edge<NodeType>::node_t_ref node_t_ref;
 
@@ -100,7 +106,7 @@ public:
     flow_edge(const_node_t to,
               const_node_t from,
               const_flow_t capacity,
-              node_t_ptr reversal) :
+              edge_ptr reversal) :
             base_edge<NodeType>(to, from),
             capacity_(capacity),
             flow_(0),
@@ -118,11 +124,11 @@ public:
         return this->capacity_ - this->flow_;
     }
 
-    void set_capacity(const flow_t amount) {
+    void set_capacity(const_flow_t amount) {
         this->capacity_ = amount;
     }
 
-    void push_flow(flow_t amount) {
+    void push_flow(const_flow_t amount) {
         this->reversal_edge_pointer_->flow_ -= amount;
         this->flow_ += amount;
     }
