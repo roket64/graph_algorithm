@@ -3,7 +3,6 @@
 
 #include <type_traits>
 #include <concepts>
-#include <memory>
 
 template<class T>
 concept mutable_integer = std::is_integral_v<T> && !std::is_const_v<T>;
@@ -146,8 +145,7 @@ public:
         return this->flow_;
     }
 
-    // TODO:this implementation raises the SEGFAULT, should fix this
-    const_flow_t_ref spare() const {
+    flow_t spare() const {
         return this->capacity_ - this->flow_;
     }
 
