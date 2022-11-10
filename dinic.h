@@ -51,14 +51,23 @@ public:
         return ret;
     }
 
-    void add_edge(NodeType from, NodeType to, FlowType capacity) {
+    void add_edge(NodeType from, NodeType to, FlowType capacity, bool directional = true) {
         // TODO: this edges must be deallocated later
-        pEdge edge = new FlowEdge<>(from, to, capacity);
-        pEdge rev = new FlowEdge<>(to, from);
-        edge->set_reversal(rev);
-        rev->set_reversal(edge);
-        adj_[edge->from()].push_back(edge);
-        adj_[rev->from()].push_back(rev);
+        if (directional) {
+            pEdge edge = new FlowEdge<>(from, to, capacity);
+            pEdge rev = new FlowEdge<>(to, from);
+            edge->set_reversal(rev);
+            rev->set_reversal(edge);
+            adj_[edge->from()].push_back(edge);
+            adj_[rev->from()].push_back(rev);
+        } else {
+            pEdge edge = new FlowEdge<>(from, to, capacity);
+            pEdge rev = new FlowEdge<>(to, from, capacity);
+            edge->set_reversal(rev);
+            rev->set_reversal(edge);
+            adj_[edge->from()].push_back(edge);
+            adj_[rev->from()].push_back(rev);
+        }
     }
 
 private:
