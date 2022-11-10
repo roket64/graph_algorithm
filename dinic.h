@@ -52,6 +52,7 @@ public:
     }
 
     void add_edge(NodeType from, NodeType to, FlowType capacity) {
+        // TODO: this edges must be deallocated later
         pEdge edge = new FlowEdge<>(from, to, capacity);
         pEdge rev = new FlowEdge<>(to, from);
         edge->set_reversal(rev);
@@ -61,8 +62,8 @@ public:
     }
 
 private:
-    std::vector<int> level_;
-    std::vector<int> work_;
+    std::vector<NodeType> level_;
+    std::vector<NodeType> work_;
     std::vector<std::vector<pEdge>> adj_;
 
     void init() {
@@ -104,6 +105,7 @@ private:
                 }
             }
         }
+        return 0;
     }
 };
 
