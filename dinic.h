@@ -8,7 +8,7 @@
 #include "base_structure.h"
 
 template<class Node = int, class Flow = int>
-class dinic : public FlowEdge<Node, Flow> {
+class Dinic : public FlowEdge<Node, Flow> {
 public:
     /*
      * reuse of types from flow_edge
@@ -33,36 +33,76 @@ public:
     typedef typename
     FlowEdge<NodeType, FlowType>::kpEdge kpEdge;
 
+    Dinic() {};
+
+    Dinic(NodeType sz) {
+        level_.resize(sz + 1);
+        work_.resize(sz + 1);
+        adj_.resize(sz + 1);
+    }
+
+    FlowType GetMaxFlow(NodeType source, NodeType sink) {
+        FlowType ret = 0;
+        while (IsReachable(source, sink)) {
+            while (FlowType flow = GetMinFlow(source, sink, 0x3f3f3f3f)) {
+                ret += flow;
+            }
+        }
+        return ret;
+    }
+
+    void add_edge(NodeType from, NodeType to, FlowType capacity) {
+        pEdge edge = new FlowEdge<>(from, to, capacity);
+        pEdge rev = new FlowEdge<>(to, from);
+        edge->set_reversal(rev);
+        rev->set_reversal(edge);
+        adj_[edge->from()].push_back(edge);
+        adj_[rev->from()].push_back(rev);
+    }
+
 private:
     std::vector<int> level_;
     std::vector<int> work_;
-    std::vector<Edge> adj_;
-    std::vector<pEdge> adj_ptr_;
+    std::vector<std::vector<pEdge>> adj_;
 
-    bool bfs(NodeType source, NodeType sink) {
+    void init() {
         std::fill(level_.begin(), level_.end(), -1);
         std::fill(work_.begin(), work_.end(), 0);
-        std::queue<NodeType> queue;
+    }
 
-        while (!queue.empty()) {
-            NodeType cur_ = queue.front();
-            queue.pop();
-            if (cur_ == sink) return true;
-            for (auto &edge_: adj_[cur_]) {
-                kNodeType next_ = edge_.to();
-                if (level_[next_] == -1
-                    && edge_.spare() > 0) {
-                    queue.push(next_);
-                    level_[next_] = level_[cur_] + 1;
+    bool IsReachable(kNodeType &source, kNodeType &sink) {
+        init();
+        std::queue<NodeType> q;
+        q.push(source);
+        level_[source] = 0;
+
+        while (!q.empty()) {
+            NodeType cur = q.front();
+            q.pop();
+            if (cur == sink) return true;
+            for (auto &e: adj_[cur]) {
+                auto to_ = e->to();
+                if (level_[to_] == -1
+                    && e->spare() > 0) {
+                    level_[to_] = level_[cur] + 1;
+                    q.push(to_);
                 }
             }
         }
+        return false;
     }
 
-    FlowType dfs(NodeType cur, NodeType sink, FlowType flow) {
+    FlowType GetMinFlow(NodeType cur, NodeType sink, FlowType flow) {
         if (cur == sink) return flow;
-        for (auto &i = work_[cur]; i < adj_[cur].size(); ++i) {
-            auto next_ = adj_[cur][i];
+        for (int &i = work_[cur]; i < adj_[cur].size(); ++i) {
+            auto next = adj_[cur][i];
+            auto to_ = next->to();
+            if (level_[to_] == level_[cur] + 1 && next->spare() > 0) {
+                if (int ret = GetMinFlow(to_, sink, std::min(next->spare(), flow))) {
+                    next->push_flow(ret);
+                    return ret;
+                }
+            }
         }
     }
 };

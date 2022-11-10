@@ -1,6 +1,7 @@
 #ifndef GRAPH_ALGORITHM_BASE_STRUCTURE_H
 #define GRAPH_ALGORITHM_BASE_STRUCTURE_H
 
+#include <iostream>
 #include <type_traits>
 #include <concepts>
 
@@ -11,7 +12,7 @@ template<class Node = int> requires mutable_integer<Node>
 class BaseEdge {
 public:
     /*
-     * declaration of types in base_edge
+     * declaration of types in BaseEdge
      */
     typedef Node NodeType;
     typedef const NodeType kNodeType;
@@ -57,7 +58,7 @@ template<class Node = int, class Flow = int> requires mutable_integer<Flow>
 class FlowEdge : public BaseEdge<Node> {
 public:
     /*
-     * reuse of types from base_edge
+     * reuse of types from BaseEdge
      */
     typedef typename
     BaseEdge<Node>::NodeType NodeType;
@@ -75,7 +76,7 @@ public:
     BaseEdge<NodeType>::krNodeType krNodeType;
 
     /*
-     * declaration of types in flow_edge
+     * declaration of types in FlowEdge
      */
     typedef Flow FlowType;
     typedef const FlowType kFlowType;
@@ -102,20 +103,20 @@ public:
             BaseEdge<NodeType>(),
             capacity_(0),
             flow_(0),
-            reversal_edge_pointer_(nullptr) {};
+            reversal_(nullptr) {};
 
     explicit FlowEdge(kNodeType to) :
             BaseEdge<NodeType>(to),
             capacity_(0),
             flow_(0),
-            reversal_edge_pointer_(nullptr) {};
+            reversal_(nullptr) {};
 
     FlowEdge(kNodeType from,
              kNodeType to) :
             BaseEdge<NodeType>(from, to),
             capacity_(0),
             flow_(0),
-            reversal_edge_pointer_(nullptr) {};
+            reversal_(nullptr) {};
 
     FlowEdge(kNodeType from,
              kNodeType to,
@@ -123,7 +124,7 @@ public:
             BaseEdge<NodeType>(from, to),
             capacity_(capacity),
             flow_(0),
-            reversal_edge_pointer_(nullptr) {};
+            reversal_(nullptr) {};
 
     FlowEdge(kNodeType from,
              kNodeType to,
@@ -132,7 +133,7 @@ public:
             BaseEdge<NodeType>(from, to),
             capacity_(capacity),
             flow_(0),
-            reversal_edge_pointer_(reversal) {};
+            reversal_(reversal) {};
 
     /*
      *  getter functions
@@ -149,6 +150,10 @@ public:
         return this->capacity_ - this->flow_;
     }
 
+    pEdge reversal() {
+        return this->reversal_;
+    }
+
     /*
      * setter functions
      */
@@ -157,19 +162,19 @@ public:
     }
 
     void set_reversal(pEdge reversal) {
-        this->reversal_edge_pointer_ = reversal;
+        this->reversal_ = reversal;
     }
 
     void push_flow(kFlowType amount) {
-        if (this->reversal_edge_pointer_ != nullptr)
-            this->reversal_edge_pointer_->flow_ -= amount;
+        if (this->reversal_ != nullptr)
+            this->reversal_->flow_ -= amount;
         this->flow_ += amount;
     }
 
 private:
     FlowType capacity_;
     FlowType flow_;
-    pEdge reversal_edge_pointer_;
+    pEdge reversal_;
 };
 
 #endif //GRAPH_ALGORITHM_BASE_STRUCTURE_H
