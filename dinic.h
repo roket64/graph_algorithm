@@ -4,7 +4,7 @@
 #include <queue> // to use of BFS
 #include <algorithm> // to use of std::min
 #include <limits> // to use of std::numeric_limits<>::max()
-#include "base_structure.h"
+#include "include/base_structure.h"
 
 template<class Node = int, class Flow = int>
 class Dinic {
