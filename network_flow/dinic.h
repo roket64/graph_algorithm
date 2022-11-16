@@ -6,25 +6,16 @@
 #include <limits> // to use of std::numeric_limits<>::max()
 #include "../include/base_structure.h"
 
-template<class Node = int, class Flow = int>
+template<class Node = int, class Flow = int> requires mutable_integer<Node>
 class Dinic {
 public:
-    Dinic() :
-            source_(0),
-            sink_(0) {};
-
-    Dinic(Node max_v) :
+    explicit Dinic(Node max_v) :
             source_(0),
             sink_(0) {
         level_.resize(max_v + 1);
         work_.resize(max_v + 1);
         adj_.resize(max_v + 1);
     }
-
-    Dinic(Node source,
-          Node sink) :
-            source_(source),
-            sink_(sink) {};
 
     Dinic(Node source,
           Node sink,
@@ -35,10 +26,6 @@ public:
         work_.resize(max_v + 1);
         adj_.resize(max_v + 1);
     }
-
-    Flow GetMaxFlow(Node source, Node sink) {}
-
-    Flow GetMaxFlow() {}
 
     void add_edge(Node from,
                   Node to,
@@ -59,10 +46,22 @@ public:
         }
     }
 
+    Flow GetMaxFlow() {
+        Flow k = 0;
+//        while (IsReachable()) {
+//            ++k;
+//        }
+        return k;
+    }
+
 private:
-    bool IsReachable() {
+    void init() {
         std::fill(level_.begin(), level_.end(), -1);
         std::fill(work_.begin(), work_.end(), 0);
+    }
+
+    bool IsReachable() {
+        init();
 
         std::queue<Node> q_;
         q_.push(source_);
@@ -72,16 +71,17 @@ private:
             Node cur_node_ = q_.front();
             q_.pop();
 
-            for (FlowEdge<> *&next_edge_: adj_[cur_node_]) {
+            if (cur_node_ == sink_) return true;
+            for (const FlowEdge<> *&next_edge_: adj_[cur_node_]) {
                 auto next_node_ = next_edge_->to();
-                if (next_edge_->spare() < 0
-                    || level_[next_node_] != -1)
+                if (next_edge_->spare() <= 0
+                    || level_[next_node_] == -1)
                     continue;
                 level_[next_node_] = level_[cur_node_] + 1;
                 q_.push(next_node_);
             }
         }
-        return level_[sink_] != -1;
+        return false;
     }
 
     Flow GetMinFlow(Node cur_node_, Flow cur_flow_) {
@@ -102,7 +102,7 @@ private:
     }
 
     const Flow INF = std::numeric_limits<Flow>::max();
-    Node source_, sink_;
+    const Node source_, sink_;
 
     std::vector<Node> level_;
     std::vector<Node> work_;
