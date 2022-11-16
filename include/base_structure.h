@@ -87,7 +87,7 @@ public:
     }
 
     const Flow spare() const {
-        return capacity_ - flow_;
+        return this->capacity_ - this->flow_;
     }
 
     void set_reversal(FlowEdge<> *e) {

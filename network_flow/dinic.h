@@ -1,6 +1,7 @@
 #ifndef GRAPH_ALGORITHM_DINIC_H
 #define GRAPH_ALGORITHM_DINIC_H
 
+#include <iostream>
 #include <queue> // to use of BFS
 #include <algorithm> // to use of std::min
 #include <limits> // to use of std::numeric_limits<>::max()
@@ -47,15 +48,17 @@ public:
     }
 
     Flow GetMaxFlow() {
+        Flow ret = 0;
+        while (CanReach()) {
+            while (Flow min_flow_ =
+                    GetMinFlow(source_, INF)) {
+                ret += min_flow_;
+            }
+        }
+        return ret;
     }
 
-private:
-    void init() {
-        std::fill(level_.begin(), level_.end(), -1);
-        std::fill(work_.begin(), work_.end(), 0);
-    }
-
-    bool IsReachable() {
+    bool CanReach() {
         init();
 
         std::queue<Node> q_;
@@ -64,19 +67,27 @@ private:
 
         while (!q_.empty()) {
             Node cur_node_ = q_.front();
+            std::cout << "cur: " << cur_node_ << std::endl;
             q_.pop();
 
             if (cur_node_ == sink_) return true;
-            for (const FlowEdge<> *&next_edge_: adj_[cur_node_]) {
+            for (auto &next_edge_: adj_[cur_node_]) {
                 auto next_node_ = next_edge_->to();
                 if (next_edge_->spare() <= 0
-                    || level_[next_node_] == -1)
+                    || level_[next_node_] != -1)
                     continue;
                 level_[next_node_] = level_[cur_node_] + 1;
                 q_.push(next_node_);
             }
         }
         return false;
+    }
+
+
+private:
+    void init() {
+        std::fill(level_.begin(), level_.end(), -1);
+        std::fill(work_.begin(), work_.end(), 0);
     }
 
     Flow GetMinFlow(Node cur_node_, Flow cur_flow_) {
