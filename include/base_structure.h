@@ -90,9 +90,14 @@ public:
         return capacity_ - flow_;
     }
 
+    void set_reversal(FlowEdge<> *e) {
+        this->reversal_ = e;
+        e->reversal_ = this;
+    }
+
     void push_flow(Flow amount) {
         if (this->reversal_ != nullptr) {
-            reversal_->flow_ -= amount;
+            this->reversal_->flow_ -= amount;
         }
         this->flow_ += amount;
     }
