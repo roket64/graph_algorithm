@@ -47,11 +47,6 @@ public:
     }
 
     Flow GetMaxFlow() {
-        Flow k = 0;
-//        while (IsReachable()) {
-//            ++k;
-//        }
-        return k;
     }
 
 private:
