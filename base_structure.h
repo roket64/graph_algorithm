@@ -11,170 +11,95 @@ concept mutable_integer = std::is_integral_v<T> && !std::is_const_v<T>;
 template<class Node = int> requires mutable_integer<Node>
 class BaseEdge {
 public:
-    /*
-     * declaration of types in BaseEdge
-     */
-    typedef Node NodeType;
-    typedef const NodeType kNodeType;
-
-    typedef NodeType *pNodeType;
-    typedef const NodeType *kpNodeType;
-
-    typedef NodeType &rNodeType;
-    typedef const NodeType &krNodeType;
-
-    /*
-     * constructors
-     */
     BaseEdge() :
-            to_(-1),
-            from_(-1) {};
+            from_(0),
+            to_(0) {};
 
-    explicit BaseEdge(kNodeType to) :
-            to_(to),
-            from_(-1) {};
+    explicit BaseEdge(BaseEdge<> &e) :
+            from_(e.from()),
+            to_(e.to()) {};
 
-    BaseEdge(kNodeType from, kNodeType to) :
-            to_(to),
-            from_(from) {};
+    BaseEdge(Node from, Node to) :
+            from_(from),
+            to_(to) {};
 
-    /*
-     * getter functions
-     */
-    krNodeType to() const {
-        return this->to_;
+    const Node &from() const {
+        return this->from_;
     }
 
-    krNodeType from() const {
+    const Node &to() const {
         return this->from_;
     }
 
 private:
-    kNodeType from_;
-    kNodeType to_;
+    Node from_, to_;
 };
 
 template<class Node = int, class Flow = int> requires mutable_integer<Flow>
 class FlowEdge : public BaseEdge<Node> {
 public:
-    /*
-     * reuse of types from BaseEdge
-     */
-    typedef typename
-    BaseEdge<Node>::NodeType NodeType;
-    typedef typename
-    BaseEdge<NodeType>::kNodeType kNodeType;
-
-    typedef typename
-    BaseEdge<NodeType>::pNodeType pNodeType;
-    typedef typename
-    BaseEdge<NodeType>::kpNodeType kpNodeType;
-
-    typedef typename
-    BaseEdge<NodeType>::rNodeType rNodeType;
-    typedef typename
-    BaseEdge<NodeType>::krNodeType krNodeType;
-
-    /*
-     * declaration of types in FlowEdge
-     */
-    typedef Flow FlowType;
-    typedef const FlowType kFlowType;
-
-    typedef FlowType *pFlowType;
-    typedef const FlowType *kpFlowType;
-
-    typedef FlowType &rFlowType;
-    typedef const FlowType &krFlowType;
-
-    typedef FlowEdge<NodeType, FlowType> Edge;
-    typedef const FlowEdge<NodeType, FlowType> kEdge;
-
-    typedef FlowEdge<NodeType, FlowType> *pEdge;
-    typedef const FlowEdge<NodeType, FlowType> *kpEdge;
-
-    typedef FlowEdge<NodeType, FlowType> &rEdge;
-    typedef const FlowEdge<NodeType, FlowType> &krEdge;
-
-    /*
-     *  constructors
-     */
     FlowEdge() :
-            BaseEdge<NodeType>(),
+            BaseEdge<Node>(),
             capacity_(0),
             flow_(0),
             reversal_(nullptr) {};
 
-    explicit FlowEdge(kNodeType to) :
-            BaseEdge<NodeType>(to),
+    explicit FlowEdge(FlowEdge<> &e) :
+            BaseEdge<Node>(e.from(), e.to()),
+            capacity_(e.capacity()),
+            flow_(e.flow()),
+            reversal_(e.reversal()) {};
+
+    FlowEdge(Node from,
+             Node to) :
+            BaseEdge<Node>(from, to),
             capacity_(0),
             flow_(0),
             reversal_(nullptr) {};
 
-    FlowEdge(kNodeType from,
-             kNodeType to) :
-            BaseEdge<NodeType>(from, to),
-            capacity_(0),
-            flow_(0),
-            reversal_(nullptr) {};
-
-    FlowEdge(kNodeType from,
-             kNodeType to,
-             kNodeType capacity) :
-            BaseEdge<NodeType>(from, to),
+    FlowEdge(Node from,
+             Node to,
+             Flow capacity) :
+            BaseEdge<Node>(from, to),
             capacity_(capacity),
             flow_(0),
             reversal_(nullptr) {};
 
-    FlowEdge(kNodeType from,
-             kNodeType to,
-             kNodeType capacity,
-             pEdge reversal) :
-            BaseEdge<NodeType>(from, to),
+    FlowEdge(Node from,
+             Node to,
+             Flow capacity,
+             FlowEdge<> *reversal) :
+            BaseEdge<Node>(from, to),
             capacity_(capacity),
             flow_(0),
             reversal_(reversal) {};
 
-    /*
-     *  getter functions
-     */
-    krFlowType capacity() const {
+    const Flow &capacity() const {
         return this->capacity_;
     }
 
-    krFlowType flow() const {
+    const Flow &flow() const {
         return this->flow_;
     }
 
-    FlowType spare() const {
-        return this->capacity_ - this->flow_;
-    }
-
-    pEdge reversal() {
+    FlowEdge<> *reversal() const {
         return this->reversal_;
     }
 
-    /*
-     * setter functions
-     */
-    void set_capacity(kFlowType amount) {
-        this->capacity_ = amount;
+    const Flow spare() const {
+        return capacity_ - flow_;
     }
 
-    void set_reversal(pEdge reversal) {
-        this->reversal_ = reversal;
-    }
-
-    void push_flow(kFlowType amount) {
-        if (this->reversal_ != nullptr)
-            this->reversal_->flow_ -= amount;
+    void push_flow(Flow amount) {
+        if (this->reversal_ != nullptr) {
+            reversal_->flow_ -= amount;
+        }
         this->flow_ += amount;
     }
 
 private:
-    FlowType capacity_;
-    FlowType flow_;
-    pEdge reversal_;
+    Flow capacity_, flow_;
+    FlowEdge<> *reversal_;
 };
 
 #endif //GRAPH_ALGORITHM_BASE_STRUCTURE_H
