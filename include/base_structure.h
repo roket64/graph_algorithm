@@ -28,7 +28,7 @@ public:
     }
 
     const Node &to() const {
-        return this->from_;
+        return this->to_;
     }
 
 private:

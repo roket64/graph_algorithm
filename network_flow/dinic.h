@@ -2,7 +2,7 @@
 #define GRAPH_ALGORITHM_DINIC_H
 
 #include <iostream>
-#include <queue> // to use of BFS
+#include <queue> // to use of std::queue, for implementation of BFS
 #include <algorithm> // to use of std::min
 #include <limits> // to use of std::numeric_limits<>::max()
 #include "../include/base_structure.h"
@@ -67,7 +67,6 @@ public:
 
         while (!q_.empty()) {
             Node cur_node_ = q_.front();
-            std::cout << "cur: " << cur_node_ << std::endl;
             q_.pop();
 
             if (cur_node_ == sink_) return true;
