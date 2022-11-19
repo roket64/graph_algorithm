@@ -19,7 +19,8 @@ public:
             from_(e.from()),
             to_(e.to()) {};
 
-    BaseEdge(Node from, Node to) :
+    BaseEdge(Node from,
+             Node to) :
             from_(from),
             to_(to) {};
 
@@ -74,15 +75,15 @@ public:
             flow_(0),
             reversal_(reversal) {};
 
-    const Flow &capacity() const {
+    [[nodiscard]] const Flow &capacity() const {
         return this->capacity_;
     }
 
-    const Flow &flow() const {
+    [[nodiscard]] const Flow &flow() const {
         return this->flow_;
     }
 
-    FlowEdge<> *reversal() const {
+    [[nodiscard]] FlowEdge<> *reversal() const {
         return this->reversal_;
     }
 
