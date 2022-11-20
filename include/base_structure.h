@@ -24,11 +24,11 @@ public:
             from_(from),
             to_(to) {};
 
-    const Node &from() const {
+    [[nodiscard]] const Node &from() const {
         return this->from_;
     }
 
-    const Node &to() const {
+    [[nodiscard]] const Node &to() const {
         return this->to_;
     }
 
