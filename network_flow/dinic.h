@@ -28,10 +28,18 @@ public:
         adj_.resize(max_v + 1);
     }
 
-    void add_edge(Node from,
-                  Node to,
-                  Flow capacity,
-                  bool directional = true) {
+    void set_source(const Node source) {
+        this->source_ = source;
+    }
+
+    void set_sink(const Node sink) {
+        this->sink_ = sink;
+    }
+
+    void add_edge(const Node from,
+                  const Node to,
+                  const Flow capacity,
+                  const bool directional = true) {
         if (directional) {
             FlowEdge<> *forward_edge_ = new FlowEdge<Node, Flow>(from, to, capacity);
             FlowEdge<> *backward_edge_ = new FlowEdge<Node, Flow>(to, from, 0);
@@ -58,6 +66,12 @@ public:
         return ret;
     }
 
+private:
+    void init() {
+        std::fill(level_.begin(), level_.end(), -1);
+        std::fill(work_.begin(), work_.end(), 0);
+    }
+
     bool CanReach() {
         init();
 
@@ -82,12 +96,6 @@ public:
         return false;
     }
 
-
-private:
-    void init() {
-        std::fill(level_.begin(), level_.end(), -1);
-        std::fill(work_.begin(), work_.end(), 0);
-    }
 
     Flow GetMinFlow(Node cur_node_, Flow cur_flow_) {
         if (cur_node_ == sink_) return cur_flow_;
