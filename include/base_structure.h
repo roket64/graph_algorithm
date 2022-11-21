@@ -1,7 +1,6 @@
 #ifndef GRAPH_ALGORITHM_BASE_STRUCTURE_H
 #define GRAPH_ALGORITHM_BASE_STRUCTURE_H
 
-#include <iostream>
 #include <type_traits>
 #include <concepts>
 

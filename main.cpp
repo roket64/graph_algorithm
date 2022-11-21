@@ -1,8 +1,6 @@
 #include "include/base_structure.h"
 #include "network_flow/dinic.h"
 #include <iostream>
-#include <type_traits>
-#include <concepts>
 
 using namespace std;
 
@@ -51,16 +49,5 @@ int main() {
     4 -> 2, 0 / 0
     4 -> 3, 0 / 0
      */
-
-    int n, m;
-    cin >> n >> m;
-    Dinic<> dinic = Dinic<>(1, n, n);
-    for (int i = 0; i < m; i++) {
-        int u, v, c;
-        cin >> u >> v >> c;
-        dinic.add_edge(u, v, c, false);
-    }
-    cout << dinic.GetMaxFlow();
-
     return 0;
 }
