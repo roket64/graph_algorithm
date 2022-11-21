@@ -9,14 +9,6 @@
 template<class Node = int, class Flow = int> requires mutable_integer<Node>
 class Dinic {
 public:
-    explicit Dinic(Node max_v) :
-            source_(0),
-            sink_(0) {
-        level_.resize(max_v + 1);
-        work_.resize(max_v + 1);
-        adj_.resize(max_v + 1);
-    }
-
     Dinic(Node source,
           Node sink,
           Node max_v) :
@@ -25,6 +17,14 @@ public:
         level_.resize(max_v + 1);
         work_.resize(max_v + 1);
         adj_.resize(max_v + 1);
+    }
+
+    ~Dinic() {
+        delete source_;
+        delete sink_;
+        std::vector<Node>().swap(level_);
+        std::vector<Node>().swap(work_);
+        std::vector<std::vector<FlowEdge<> *>>().swap(adj_);
     }
 
     void set_source(const Node source) {
